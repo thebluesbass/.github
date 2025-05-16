@@ -1,17 +1,28 @@
-name: Check PR Template
+name: Check Pull Request Template
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, reopened]
+    types: [opened, edited]
 
 jobs:
-  validate_pr:
+  check-template:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Check PR Template
-        uses: ./.github/PULL_REQUEST_TEMPLATE.md
-        with:
-          template_path: "./.github/PULL_REQUEST_TEMPLATE.md"
-          pr_description: ${{ github.event.pull_request.body }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the PR body
+          PR_BODY=$(jq -r .pull_request.body "$GITHUB_EVENT_PATH")
+
+          # Check if the checkbox is checked
+          if [[ "$PR_BODY" =~ "- \[x\]" ]]; then
+            echo "Checkbox is checked. PR can be merged."
+          else
+            echo "Checkbox is not checked. Please check the box in the PR template."
+            exit 1
+          fi
