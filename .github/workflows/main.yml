@@ -18,7 +18,7 @@ jobs:
           PR_BODY=$(jq -r .pull_request.body "$GITHUB_EVENT_PATH")
 
           # Check if the checkbox is checked
-          if [[ "$PR_BODY" =~ "- \[x\]" ]]; then
+          if [[ "$PR_BODY" =~ -[[:space:]]*\[[[:space:]]*[xX][[:space:]]*\] ]]; then
             echo "Checkbox is checked. PR can be merged."
           else
             echo "Checkbox is not checked. Please check the box in the PR template."
