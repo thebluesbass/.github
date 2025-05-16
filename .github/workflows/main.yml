@@ -1,0 +1,39 @@
+name: Check PR Template
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+jobs:
+  check-template:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check PR Template
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prTitle = context.payload.pull_request.title;
+            const prBody = context.payload.pull_request.body;
+
+            // Define required sections of the PR template
+            const requiredSections = [
+              { name: 'Description', regex: /## Description\s*[\s\S]*?\n\n/ },
+              { name: 'Type of change', regex: /## Type of change\s*[\s\S]*?\n\n/ },
+              { name: 'Checklist', regex: /## Checklist\s*[\s\S]*?\n\n/ }
+            ];
+
+            let missingSections = [];
+
+            requiredSections.forEach(section => {
+              if (!section.regex.test(prBody)) {
+                missingSections.push(section.name);
+              }
+            });
+
+            if (missingSections.length > 0) {
+              const missingSectionsList = missingSections.join(', ');
+              throw new Error(`The following sections are missing from the PR template: ${missingSectionsList}`);
+            }
+
+            console.log('All required sections are present in the PR template.');
