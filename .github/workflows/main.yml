@@ -5,15 +5,13 @@ on:
     types: [opened, edited, synchronize, reopened]
 
 jobs:
-  check-template:
+  validate_pr:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
       - uses: actions/checkout@v2
-
       - name: Check PR Template
         uses: ./pull_request_template.md
         with:
-          template_path: "././pull_request_template.md"
+          template_path: "./pull_request_template.md"
           pr_description: ${{ github.event.pull_request.body }}
