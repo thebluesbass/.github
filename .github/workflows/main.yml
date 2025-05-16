@@ -10,11 +10,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Check PR Template
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get the PR body
           PR_BODY=$(jq -r .pull_request.body "$GITHUB_EVENT_PATH")
