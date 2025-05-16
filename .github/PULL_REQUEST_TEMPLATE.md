@@ -1,2 +1,3 @@
 This is a shitty PR
-- [ ] check this out
+### Checklist
+- [ ] I have performed a self-review of my code
