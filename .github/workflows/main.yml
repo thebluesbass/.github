@@ -2,7 +2,7 @@ name: Check PR Template
 
 on:
   pull_request:
-    types: [opened, edited]
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
   check-template:
@@ -13,16 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check PR Template
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Get the PR body
-          PR_BODY=$(jq -r .pull_request.body "$GITHUB_EVENT_PATH")
-
-          # Check if the checkbox is checked
-          if [[ "$PR_BODY" =~ "- \[x\]" ]]; then
-            echo "Checkbox is checked. PR can be merged."
-          else
-            echo "Checkbox is not checked. Please check the box in the PR template."
-            exit 1
-          fi
+        uses: ./pull_request_template.md
+        with:
+          template_path: "././pull_request_template.md"
+          pr_description: ${{ github.event.pull_request.body }}
